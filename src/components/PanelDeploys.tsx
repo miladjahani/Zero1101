@@ -1,5 +1,4 @@
 /**
-import CustomSelect from './CustomSelect'
  * "پنل اختصاصی ما" — the one catalog panel this installation ships, together
  * with every deployment of it the signed-in user owns.
  *
@@ -19,6 +18,7 @@ import CustomSelect from './CustomSelect'
  * bot and the wizard use (worker/panel-deploy.ts) — and follows it until it is
  * live, without a multi-step wizard in between.
  */
+import CustomSelect from './CustomSelect'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {

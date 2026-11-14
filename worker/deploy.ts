@@ -229,8 +229,8 @@ const WORKER_SOURCES: Record<string, WorkerSourceConfig> = {
     expectMarker: 'Nova',
   },
   milios: {
-    // miladjahani/Milios3.10.2 — the "Mili" panel (miliconfigOS 3.10.2). The
-    // repo publishes its finished worker as one ES module at the root
+    // miladjahani/Milizeroooo — the "Mili" panel. The repo publishes its
+    // finished worker as one ES module at the root
     // (`_worker.js`, byte-identical to `dist/_worker.js`); its `src/` is
     // modular and would need a build, so the published file is the only
     // deployable entry.
@@ -240,9 +240,9 @@ const WORKER_SOURCES: Record<string, WorkerSourceConfig> = {
     // dist copy because that is the artifact the repo itself deploys, and keep
     // the root file as a fallback for the case where only one of them survives
     // a future commit.
-    url: 'https://raw.githubusercontent.com/miladjahani/Milios3.10.2/main/dist/_worker.js',
-    label: 'Mili (miladjahani/Milios3.10.2)',
-    fallbackUrls: ['https://raw.githubusercontent.com/miladjahani/Milios3.10.2/main/_worker.js', '/repo/milios.js'],
+    url: 'https://raw.githubusercontent.com/miladjahani/Milizeroooo/main/dist/_worker.js',
+    label: 'Mili (miladjahani/Milizeroooo)',
+    fallbackUrls: ['https://raw.githubusercontent.com/miladjahani/Milizeroooo/main/_worker.js', '/repo/milios.js'],
     // `compatibility_date` from the repo's own wrangler.toml / wrangler.worker.toml;
     // it declares no compatibility flags, so none are added here either.
     compat: '2024-11-06',

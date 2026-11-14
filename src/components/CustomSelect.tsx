@@ -3,6 +3,8 @@ import { createPortal } from 'react-dom'
 import { ChevronDown, Check, Search, X } from 'lucide-react'
 
 export interface CustomSelectProps {
+  /** Lets a <label htmlFor> point at the trigger button. */
+  id?: string
   value?: string | number
   onChange?: (e: { target: { value: string }; currentTarget: { value: string } }) => void
   className?: string
@@ -46,6 +48,7 @@ function collectOptions(children: React.ReactNode, out: ParsedOption[] = []): Pa
 }
 
 export default function CustomSelect({
+  id,
   value,
   onChange,
   className = '',
@@ -113,6 +116,7 @@ export default function CustomSelect({
     <>
       <button
         ref={triggerRef}
+        id={id}
         type="button"
         disabled={disabled}
         title={title}

@@ -2,7 +2,7 @@
  * miliconfigosv3 (miladjahani/Miliconfigpro) — retired source.
  *
  * It no longer appears in the wizard or the bot's source picker: "Mili" from
- * miladjahani/Milios3.10.2 replaced it. What must NOT happen is the opposite of
+ * miladjahani/Milizeroooo replaced it. What must NOT happen is the opposite of
  * adding it — a silent removal from the engine, which would leave the
  * deployments already running this source unable to update or roll back (their
  * stored `worker_source` would resolve to nothing).

@@ -1,5 +1,4 @@
 /**
-import CustomSelect from './CustomSelect'
  * IP Scanner — real measurements only.
  *
  * Every result comes from the worker's edge engines (worker/scanner.ts,
@@ -15,6 +14,7 @@ import CustomSelect from './CustomSelect'
  * download speed test through that IP, copy it, push the selection into a
  * worker's ADD.txt, or inject it into a custom subscription.
  */
+import CustomSelect from './CustomSelect'
 import { useEffect, useState } from 'react'
 import {
   AlertTriangle, ArrowRight, CheckCircle2, Cloud, Copy, Gauge, Loader2,

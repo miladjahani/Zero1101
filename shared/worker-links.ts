@@ -30,7 +30,7 @@ export const WORKER_SOURCE_KIND: Record<string, WorkerSourceKind> = {
   zeus: 'zeus',
   miliconfigzeus: 'zeus',
   nova: 'zeus',
-  // Mili (miladjahani/Milios3.10.2) reads its admin path from `env.u`, so the
+  // Mili (miladjahani/Milizeroooo) reads its admin path from `env.u`, so the
   // dashboard of a deployment really is `/<uuid>` — but its subscriptions are
   // issued per user inside the panel, so there is no deploy-time sub link.
   milios: 'uuidpanel',
