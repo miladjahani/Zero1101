@@ -32,7 +32,7 @@ import { handleGroupCreate, handleGroupList, handleGroupDelete, handleGroupPatch
 import { handleInjectorCreate, handleInjectorList, handleInjectorPatch, handleInjectorDelete, serveInjectedSub } from './injector'
 import { handleMemberCreate, handleMemberCreateMany, handleMemberList, handleMemberPatch, handleMemberDelete, handleMemberBulk, handleCfQuota, refreshMemberUsage, serveMemberSub, handleMemberTest } from './members'
 import { serveStatusPage } from './status'
-import { exportBackup, importBackup } from './backup'
+import { exportBackup, importBackup, exportSystemBackup, importSystemBackup } from './backup'
 import { handleSourceSettings, handleSourceNodes } from './sourcebridge'
 import { DEFAULT_PANEL_REPO, DEFAULT_RAILWAY_REGION, panelTcpPorts, railwayRegionLabel, resolvePanel } from '../shared/panels'
 
@@ -1150,6 +1150,16 @@ async function handleRouted(
     // ── Per-worker members (end users with private settings) ──────────
     if (path === '/api/backup' && method === 'GET') return await exportBackup(env, user.id)
     if (path === '/api/backup' && method === 'POST') return await importBackup(env, user.id, request)
+
+    // ── Whole-system backup (admin only) ──────────────────────────────
+    if (path === '/api/backup/system' && (method === 'GET' || method === 'POST')) {
+      if (user.role !== 'admin' && !(await isOwner(env, user.id))) {
+        return apiError('بکاپ جامع فقط برای ادمین در دسترس است', 403)
+      }
+      if (method === 'GET') return await exportSystemBackup(env)
+      const header = request.headers.get('Authorization') ?? ''
+      return await importSystemBackup(env, request, header.startsWith('Bearer ') ? header.slice(7).trim() : '')
+    }
     if (path === '/api/members' && method === 'GET') return await handleMemberList(env, user.id, url.searchParams.get('deployment_id'))
     if (path === '/api/members' && method === 'POST') return await handleMemberCreate(env, user.id, request)
     if (path === '/api/members/bulk' && method === 'POST') return await handleMemberBulk(env, user.id, request)

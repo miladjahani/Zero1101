@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import PanelDeploys from '../components/PanelDeploys'
-import { api, downloadApi } from '../lib/api'
+import BackupCenter from '../components/BackupCenter'
+import { api } from '../lib/api'
 import { useAuth } from '../lib/auth'
 import {
   KeyRound,
@@ -15,13 +16,10 @@ import {
   Cloud,
   Bot,
   Zap,
-  Download,
-  Upload,
   DatabaseBackup,
 } from 'lucide-react'
 import { Gauge } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { useRef } from 'react'
 
 interface Stats {
   tokens: number
@@ -65,41 +63,7 @@ export default function Dashboard() {
   const [mili, setMili] = useState<MiliPanel[]>([])
   const [miliBusy, setMiliBusy] = useState<string | null>(null)
   const [miliMsg, setMiliMsg] = useState<{ text: string; ok: boolean } | null>(null)
-  const [backupMsg, setBackupMsg] = useState<string | null>(null)
-  const [importing, setImporting] = useState(false)
-  const [exporting, setExporting] = useState(false)
-  const importFileRef = useRef<HTMLInputElement>(null)
-
-  const handleExport = async () => {
-    setExporting(true)
-    setBackupMsg(null)
-    try {
-      await downloadApi('/backup', `miliconfig-backup-${new Date().toISOString().slice(0, 10)}.json`)
-    } catch (e) {
-      setBackupMsg(`خطا در تهیه خروجی: ${e instanceof Error ? e.message : 'دانلود ناموفق بود'}`)
-    } finally {
-      setExporting(false)
-    }
-  }
-
-  const handleImport = async (file: File) => {
-    setImporting(true)
-    setBackupMsg(null)
-    try {
-      const text = await file.text()
-      const parsed = JSON.parse(text)
-      const res = await api<{ members_added: number; members_skipped: number; injectors_added: number; injectors_skipped: number; groups_added: number; groups_skipped: number }>('/backup', {
-        method: 'POST',
-        body: { ...parsed, mode: 'merge' },
-      })
-      setBackupMsg(`بازگردانی شد: ${res.members_added} عضو، ${res.injectors_added} ساب تزریقی، ${res.groups_added} گروه (${res.members_skipped + res.injectors_skipped + res.groups_skipped} تکراری رد شد)`)
-    } catch (e) {
-      setBackupMsg(`خطا در بازگردانی: ${e instanceof Error ? e.message : 'فایل نامعتبر'}`)
-    } finally {
-      setImporting(false)
-      if (importFileRef.current) importFileRef.current.value = ''
-    }
-  }
+  const [backupOpen, setBackupOpen] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -222,30 +186,25 @@ export default function Dashboard() {
       </div>
 
 
-      {/* Backup / restore */}
+      {/* Backup / restore — one entry point for the user and system scopes */}
       <div className="glass-card p-5">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
             <h2 className="text-sm font-bold text-white flex items-center gap-2">
-              <DatabaseBackup className="w-4 h-4 text-brand-400" /> بکاپ و بازگردانی
+              <DatabaseBackup className="w-4 h-4 text-brand-400" /> مرکز بکاپ و بازیابی اطلاعات
             </h2>
-            <p className="text-xs text-slate-500 mt-1">عضوها، ساب‌های تزریقی و گروهی — لینک‌ها بعد از بازگردانی همان قبلی می‌مانند.</p>
-            {backupMsg && <p className="text-xs text-brand-300 mt-2">{backupMsg}</p>}
+            <p className="text-xs text-slate-500 mt-1">
+              بکاپ کامل اطلاعات من (ورکرها، پنل‌ها، توکن‌ها، کاربران و ساب‌ها) و — برای ادمین — بکاپ جامع کل سیستم و دیتابیس D1.
+            </p>
           </div>
-          <div className="flex items-center gap-2">
-            <button onClick={() => void handleExport()} disabled={exporting}
-              className="btn-secondary flex items-center gap-2 text-sm px-3 py-1.5">
-              {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />} خروجی JSON
-            </button>
-            <button onClick={() => importFileRef.current?.click()} disabled={importing}
-              className="btn-primary flex items-center gap-2 text-sm px-3 py-1.5">
-              {importing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} بازگردانی
-            </button>
-            <input ref={importFileRef} type="file" accept="application/json,.json" className="hidden"
-              onChange={(e) => { const f = e.target.files?.[0]; if (f) void handleImport(f) }} />
-          </div>
+          <button onClick={() => setBackupOpen(true)}
+            className="btn-secondary flex items-center gap-2 text-sm px-3 py-1.5">
+            <DatabaseBackup className="w-4 h-4" /> باز کردن مرکز بکاپ
+          </button>
         </div>
       </div>
+
+      <BackupCenter open={backupOpen} onClose={() => setBackupOpen(false)} isAdmin={user?.role === 'admin'} />
 
       {/* The panel this installation is built around — always the first block. */}
       <PanelDeploys variant="card" />
