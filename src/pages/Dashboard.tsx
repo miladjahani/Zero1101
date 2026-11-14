@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import PanelDeploys from '../components/PanelDeploys'
-import BackupCenter from '../components/BackupCenter'
 import { api } from '../lib/api'
 import { useAuth } from '../lib/auth'
 import {
@@ -16,7 +15,6 @@ import {
   Cloud,
   Bot,
   Zap,
-  DatabaseBackup,
 } from 'lucide-react'
 import { Gauge } from 'lucide-react'
 import { Link } from 'react-router-dom'
@@ -63,7 +61,6 @@ export default function Dashboard() {
   const [mili, setMili] = useState<MiliPanel[]>([])
   const [miliBusy, setMiliBusy] = useState<string | null>(null)
   const [miliMsg, setMiliMsg] = useState<{ text: string; ok: boolean } | null>(null)
-  const [backupOpen, setBackupOpen] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -185,26 +182,6 @@ export default function Dashboard() {
         </Link>
       </div>
 
-
-      {/* Backup / restore — one entry point for the user and system scopes */}
-      <div className="glass-card p-5">
-        <div className="flex items-center justify-between gap-4 flex-wrap">
-          <div>
-            <h2 className="text-sm font-bold text-white flex items-center gap-2">
-              <DatabaseBackup className="w-4 h-4 text-brand-400" /> مرکز بکاپ و بازیابی اطلاعات
-            </h2>
-            <p className="text-xs text-slate-500 mt-1">
-              بکاپ کامل اطلاعات من (ورکرها، پنل‌ها، توکن‌ها، کاربران و ساب‌ها) و — برای ادمین — بکاپ جامع کل سیستم و دیتابیس D1.
-            </p>
-          </div>
-          <button onClick={() => setBackupOpen(true)}
-            className="btn-secondary flex items-center gap-2 text-sm px-3 py-1.5">
-            <DatabaseBackup className="w-4 h-4" /> باز کردن مرکز بکاپ
-          </button>
-        </div>
-      </div>
-
-      <BackupCenter open={backupOpen} onClose={() => setBackupOpen(false)} isAdmin={user?.role === 'admin'} />
 
       {/* The panel this installation is built around — always the first block. */}
       <PanelDeploys variant="card" />

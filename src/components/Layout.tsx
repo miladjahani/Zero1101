@@ -22,8 +22,10 @@ import {
   Palette,
   Sparkles,
   Check,
+  DatabaseBackup,
 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
+import BackupCenter from './BackupCenter'
 
 interface NavItem { to: string; label: string; icon: typeof LayoutDashboard; end?: boolean; guide?: string }
 
@@ -373,11 +375,13 @@ function ThemeStudioModal({
 
 function TopStrip({
   onOpenTheme,
+  onOpenBackup,
   bgFx,
   onToggleBgFx,
   activeThemeName,
 }: {
   onOpenTheme: () => void
+  onOpenBackup: () => void
   bgFx: boolean
   onToggleBgFx: () => void
   activeThemeName: string
@@ -419,6 +423,15 @@ function TopStrip({
           <Palette className="w-3.5 h-3.5" />
           <span>قالب: {activeThemeName}</span>
         </button>
+        <button
+          type="button"
+          onClick={onOpenBackup}
+          className="chip hover:opacity-90 transition-opacity cursor-pointer"
+          title="مرکز بکاپ و بازیابی اطلاعات"
+        >
+          <DatabaseBackup className="w-3.5 h-3.5" style={{ color: 'var(--t-accent)' }} />
+          <span>بکاپ</span>
+        </button>
         <span className="font-mono text-sm text-slate-200 tabular-nums ms-2" dir="ltr">{time}</span>
         <span className="text-xs text-slate-500">{date}</span>
       </div>
@@ -431,6 +444,7 @@ export default function Layout() {
   const navigate = useNavigate()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [themeModalOpen, setThemeModalOpen] = useState(false)
+  const [backupOpen, setBackupOpen] = useState(false)
   const [themeId, setThemeId] = useState<string>(() => {
     try {
       return localStorage.getItem('mili_app_theme') || 'zedsecure'
@@ -478,6 +492,7 @@ export default function Layout() {
     <LiveGuide>
       <OnboardingModals />
       <CustomCursor />
+      <BackupCenter open={backupOpen} onClose={() => setBackupOpen(false)} isAdmin={user?.role === 'admin'} />
       <ThemeStudioModal
         open={themeModalOpen}
         onClose={() => setThemeModalOpen(false)}
@@ -520,6 +535,15 @@ export default function Layout() {
               title="قالب‌ها و تم"
             >
               <Palette className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setBackupOpen(true)}
+              className="p-2 rounded-xl border text-slate-300"
+              style={{ background: 'rgba(var(--t-accent-rgb), 0.08)', borderColor: 'var(--t-line)' }}
+              title="مرکز بکاپ و بازیابی اطلاعات"
+            >
+              <DatabaseBackup className="w-4 h-4" style={{ color: 'var(--t-accent)' }} />
             </button>
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -641,6 +665,7 @@ export default function Layout() {
         <main className="lg:mr-72 min-h-screen pt-16 lg:pt-0 relative z-10">
           <TopStrip
             onOpenTheme={() => setThemeModalOpen(true)}
+            onOpenBackup={() => setBackupOpen(true)}
             bgFx={bgFx}
             onToggleBgFx={handleToggleBgFx}
             activeThemeName={activeTheme.name}
